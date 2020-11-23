@@ -12,20 +12,16 @@
   - freioDeMao();
   - bateria();
 
-  This example code is in the public domain.
-  
-  2018/09/15 - Transferido para Servidor Raspberry no carro
-               Tela de inicializacao
-               Ainda fala implementar o CAN e o Audio beep
+  2018/09/15 - Primeira versão com Arduino Mega 
   2020/11/22 - Nova placa com Arduino Nano - MCP2551             
-               Testando funcionalidades 
+               Testando funcionalidades Display ok, beep ok 
+               Falta testar entradas e saidas
 
 */
 
 #define  lcd_RS 7    // D7
 #define  lcd_RW 8    // D8
 #define  lcd_E  9    // D9
-// Falta implementar Reset no Shiftrefister
 #define  beep   6    //  D6 
 
 #include "U8glib.h"
@@ -39,13 +35,13 @@ U8GLIB_ST7920_128X64_4X u8g(lcd_E , lcd_RW, lcd_RS ); //13, 12, 11);  // Enable,
 // D9 = E
 // Falta implementar Reset no Shiftrefister
 
-boolean PinFarolBaixa ; // = 34;   // fio preto
-boolean PinFarolAlta  ; // = 32;    // fio marron 
-boolean PinLanterna   ; //  = 30;     // fio amarela
-boolean PinLuzDeFreio ; //= 28;   // fio laranja 
-boolean PinLuzRe      ; // = 26;        // fio verde 
-boolean PinSetaDireita; // = 24;  // fio azul  
-boolean PinSetaEquerda; // = 22;  // fio vermelho
+boolean PinFarolBaixa ;  
+boolean PinFarolAlta  ;
+boolean PinLanterna   ;  
+boolean PinLuzDeFreio ;  
+boolean PinLuzRe      ;   
+boolean PinSetaDireita;  
+boolean PinSetaEquerda;  
 
 const int InLanterna = 53;
 const int InFarolBaixo = 51;
