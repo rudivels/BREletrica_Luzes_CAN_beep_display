@@ -16,8 +16,16 @@
   2020/11/22 - Nova placa com Arduino Nano - MCP2551             
                Testando funcionalidades Display ok, beep ok 
                Falta testar entradas e saidas
+  2020/12/15 - Iniciando uso de CANbus      
+               Can bus funcionando - testado com painel UP       
 
 */
+
+#include <Canbus.h>
+#include <defaults.h>
+#include <global.h>
+#include <mcp2515.h>
+#include <mcp2515_defs.h>
 
 #define  lcd_RS 7    // D7
 #define  lcd_RW 8    // D8
@@ -230,7 +238,7 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  Serial.println("BREletrica CAN Luzes ");
+  Serial.println("BREletrica CAN Luzes 15/12/2020");
   beep_on();
   u8g.firstPage();
   do {
@@ -238,8 +246,19 @@ void setup() {
     u8g.drawStr(20, 20, "BREletrico");      
     u8g.drawStr(30, 54, versao);
   } while (u8g.nextPage());
-  delay(1000);
+  delay(500);
+  
   beep_off();
+  Serial.println("CAN Read - Testing receival of CAN Bus message");  
+  delay(500);
+  
+  if(Canbus.init(CANSPEED_500))  //Initialise MCP2515 CAN controller at the specified speed
+    Serial.println("CAN Init ok");
+  else
+    Serial.println("Can't init CAN");
+    
+  delay(1000);
+
   BfarolAlto = 1; 
 }
 
@@ -345,9 +364,28 @@ void draw() {
 
 void loop() {
   // SequencialLuzes();   //
-  Leia_Chaves();
+  tCAN message;
+  // Leia_Chaves();
   u8g.firstPage();
   do {
     draw();
   } while ( u8g.nextPage() );
+
+  if (mcp2515_check_message()) 
+  {
+    if (mcp2515_get_message(&message)) 
+    {
+               Serial.print("ID: ");
+               Serial.print(message.id,HEX);
+               Serial.print(", ");
+               Serial.print("Data: ");
+               Serial.print(message.header.length,DEC);
+               for(int i=0;i<message.header.length;i++) 
+                { 
+                  Serial.print(message.data[i],HEX);
+                  Serial.print(" ");
+                }
+               Serial.println("");
+     }
+   }
 }
